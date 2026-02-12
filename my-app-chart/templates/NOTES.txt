@@ -1,0 +1,28 @@
+# templates/NOTES.txt
+
+Your '{{ .Chart.Name }}' application has been deployed. 🚀
+
+---------------------------------------------------------------------------------
+
+### Post-Deployment Instructions
+
+1. **Configure DNS in AWS Route 53**
+   To make your application accessible via a domain name, you need to point your domain to the AWS Application Load Balancer (ALB).
+   - Get the DNS endpoint of the ALB created for your service.
+   - In AWS Route 53, create a Hosted Zone for your domain.
+   - Inside the Hosted Zone, create an 'A' record with the "Alias" option enabled, pointing to the ALB endpoint.
+
+2. **Access the ArgoCD Dashboard**
+   To access the ArgoCD user interface, you can forward the port from the Kubernetes service to your local machine.
+
+   Run this command in your terminal:
+   kubectl port-forward svc/argocd-server -n argocd 8080:443
+
+   You can now browse to **https://localhost:8080**
+
+3. **Get Initial ArgoCD Admin Password**
+   To log in for the first time, retrieve the initial admin password with this command:
+
+   kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 --decode && echo
+
+---------------------------------------------------------------------------------

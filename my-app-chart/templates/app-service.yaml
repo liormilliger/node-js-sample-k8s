@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mywebsite-service
+apiVersion: v1
+kind: Service
+metadata:
+  name: mywebsite-service
+  labels:
+    app: mywebsite
+spec:
+  type: ClusterIP
+  selector:
+    app: mywebsite
+  ports:
+    - name: web
+      protocol: TCP
+      port: 80
+      targetPort: 5000

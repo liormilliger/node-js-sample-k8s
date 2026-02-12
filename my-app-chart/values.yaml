@@ -1,0 +1,5 @@
+replicaCount: 2
+image:
+  repository: 704505749045.dkr.ecr.us-east-1.amazonaws.com/mywebsite
+  pullPolicy: IfNotPresent
+  tag: "1.142-main"

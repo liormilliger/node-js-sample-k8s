@@ -1,0 +1,85 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: filebeat-eck
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "2" 
+spec:
+  project: default
+  source:
+    repoURL: https://helm.elastic.co
+    chart: filebeat
+    targetRevision: 8.5.1
+    helm:
+      values: |
+        daemonset:
+          enabled: true
+          secretMounts: []
+
+          extraEnvs:
+            - name: ELASTIC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: elasticsearch-es-elastic-user 
+                  key: elastic
+
+          extraVolumes:
+            - name: elasticsearch-http-certs
+              secret:
+                secretName: elasticsearch-es-http-ca-internal
+                items:
+                  - key: tls.crt
+                    path: ca.crt
+
+          extraVolumeMounts:
+            - name: elasticsearch-http-certs
+              mountPath: /usr/share/filebeat/certs/http
+              readOnly: true
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "100Mi"
+            limits:
+              cpu: "200m"
+              memory: "200Mi"
+
+        filebeatConfig:
+          filebeat.yml: |
+            filebeat.autodiscover:
+              providers:
+                - type: kubernetes
+                  node: ${NODE_NAME}
+                  hints.enabled: true
+                  hints.default_config:
+                    type: container
+                    paths:
+                      - /var/log/containers/*-${data.kubernetes.container.id}.log
+              
+            processors:
+              - add_kubernetes_metadata:
+                  in_cluster: true
+
+            output.elasticsearch:
+              hosts: ["https://elasticsearch-es-http.elastic-system.svc:9200"]
+              username: "elastic"
+              password: "${ELASTIC_PASSWORD}"
+
+              ssl:
+                enabled: true
+                certificate_authorities:
+                  - "/usr/share/filebeat/certs/http/ca.crt"
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: elastic-system 
+  
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false

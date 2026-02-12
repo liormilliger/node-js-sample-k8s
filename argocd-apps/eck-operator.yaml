@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: eck-operator
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argroj.io
+  annotations:
+    # This is Wave 0. It must be installed first.
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  source:
+    repoURL: https://helm.elastic.co
+    chart: eck-operator
+    # You can get the latest version of this by running:
+    # helm search repo elastic/eck-operator --versions
+    targetRevision: 3.1.0 # Or the latest version you find
+  destination:
+    server: https://kubernetes.default.svc
+    # The operator is typically installed in its own namespace
+    namespace: elastic-system 
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
