@@ -1,19 +1,18 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mywebsite-service
-apiVersion: v1
-kind: Service
-metadata:
-  name: mywebsite-service
+  name: {{ include "nodejs-app.fullname" . }}
   labels:
-    app: mywebsite
+    {{- include "nodejs-app.labels" . | nindent 4 }}
+  annotations:
+    # This tells AWS to create a Network Load Balancer (NLB)
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
 spec:
-  type: ClusterIP
-  selector:
-    app: mywebsite
+  type: {{ .Values.service.type }}
   ports:
-    - name: web
+    - port: {{ .Values.service.port }}
+      targetPort: 8080
       protocol: TCP
-      port: 80
-      targetPort: 5000
+      name: http
+  selector:
+    {{- include "nodejs-app.selectorLabels" . | nindent 4 }}

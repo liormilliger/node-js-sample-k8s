@@ -1,40 +1,37 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mywebsite-deployment
-  labels:
-    app: mywebsite
+  name: {{ include "nodejs-app.fullname" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: mywebsite
+      app: {{ include "nodejs-app.name" . }}
   template:
     metadata:
       labels:
-        app: mywebsite
+        app: {{ include "nodejs-app.name" . }}
+      # Metrics Scraping Annotations
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "{{ .Values.service.port }}"
     spec:
       containers:
-      - name: mywebsite-app
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 5000
-        env:
-        - name: POSTGRES_HOST
-          value: "postgres-db-service"
-        - name: POSTGRES_DB
-          valueFrom:
-            configMapKeyRef:
-              name: postgres-config
-              key: POSTGRES_DB
-        - name: POSTGRES_USER
-          valueFrom:
-            configMapKeyRef:
-              name: postgres-config
-              key: POSTGRES_USER
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: postgres-secret
-              key: postgres-password
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+          # Resource Limits & Requests
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}

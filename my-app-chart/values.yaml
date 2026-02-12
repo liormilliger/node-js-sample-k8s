@@ -1,5 +1,18 @@
 replicaCount: 2
+
 image:
-  repository: 704505749045.dkr.ecr.us-east-1.amazonaws.com/mywebsite
+  repository: 704505749045.dkr.ecr.us-east-1.amazonaws.com/liorm-nodejs-app
+  tag: "latest"
   pullPolicy: IfNotPresent
-  tag: "1.142-main"
+
+service:
+  type: LoadBalancer
+  port: 80
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi

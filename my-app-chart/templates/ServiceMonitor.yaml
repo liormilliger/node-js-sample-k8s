@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "nodejs-app.fullname" . }}
+  labels:
+    # This label is often required so Prometheus can "find" this monitor
+    release: prometheus-stack 
+spec:
+  selector:
+    matchLabels:
+      {{- include "nodejs-app.selectorLabels" . | nindent 6 }}
+  endpoints:
+  - port: http
+    path: /metrics
+    interval: 30s
+      
