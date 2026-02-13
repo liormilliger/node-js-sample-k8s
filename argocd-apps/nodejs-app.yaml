@@ -12,7 +12,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/liormilliger/k8s-gitops-repo.git
+    repoURL: https://github.com/liormilliger/node-js-sample-k8s.git
     # targetRevision: main
     targetRevision: HEAD
     path: my-app-chart
