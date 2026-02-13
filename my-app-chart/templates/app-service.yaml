@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ include "nodejs-app.fullname" . }}
   labels:
-    {{- include "nodejs-app.labels" . | nindent 4 }}
+    app: nodejs-app
   annotations:
     # This tells AWS to create a Network Load Balancer (NLB)
     service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
@@ -15,4 +15,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "nodejs-app.selectorLabels" . | nindent 4 }}
+    app: nodejs-app
