@@ -6,11 +6,11 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "nodejs-app.name" . }}
+      {{- include "nodejs-app.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: {{ include "nodejs-app.name" . }}
+        {{- include "nodejs-app.selectorLabels" . | nindent 8 }}
       # Metrics Scraping Annotations
       annotations:
         prometheus.io/scrape: "true"
