@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: {{ include "nodejs-app.fullname" . }}
   annotations:
-    kubernetes.io/ingress.class: nginx
+    ingressClassName: nginx
     # For later use for SSL with cert-manager:
     # cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
