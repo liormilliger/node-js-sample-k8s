@@ -1,12 +1,13 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "nodejs-app.fullname" . }}
-  annotations:
-    ingressClassName: nginx
+  name: nodejs-ingress
+  # annotations:
+  #   kubernetes.io/ingress.class: nginx
     # For later use for SSL with cert-manager:
     # cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
+  ingressClassName: nginx
   rules:
     - http:
         paths:
