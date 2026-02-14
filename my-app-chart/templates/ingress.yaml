@@ -4,8 +4,8 @@ metadata:
   name: nodejs-ingress
   annotations:
     kubernetes.io/ingress.class: nginx
-    # For later use for SSL with cert-manager:
-    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    # Optional: Enable path rewriting if you want to strip the prefix
+    # nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx
   rules:
@@ -13,6 +13,20 @@ spec:
         paths:
           - path: /my-app
             pathType: Prefix
+            backend:
+              service:
+                name: {{ include "nodejs-app.fullname" . }}
+                port:
+                  number: {{ .Values.service.port }}
+          - path: /metrics
+            pathType: Exact
+            backend:
+              service:
+                name: {{ include "nodejs-app.fullname" . }}
+                port:
+                  number: {{ .Values.service.port }}
+          - path: /ready
+            pathType: Exact
             backend:
               service:
                 name: {{ include "nodejs-app.fullname" . }}
