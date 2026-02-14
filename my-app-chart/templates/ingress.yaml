@@ -2,8 +2,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: nodejs-ingress
-  # annotations:
-  #   kubernetes.io/ingress.class: nginx
+  annotations:
+    kubernetes.io/ingress.class: nginx
     # For later use for SSL with cert-manager:
     # cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
