@@ -6,11 +6,11 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: nodejs-app
+      app: {{ .Values.labels.app }}
   template:
     metadata:
       labels:
-        app: nodejs-app
+        app: {{ .Values.labels.app }}
       # Metrics Scraping Annotations
       annotations:
         prometheus.io/scrape: "true"
@@ -22,16 +22,16 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: {{ .Values.service.containerPort }}
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /live
-              port: 8080
+              port: {{ .Values.service.containerPort }}
           readinessProbe:
             httpGet:
               path: /ready
-              port: 8080
+              port: {{ .Values.service.containerPort }}
           # Resource Limits & Requests
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
