@@ -8,5 +8,11 @@ metadata:
     service: {{ .Values.labels.service }}
     grafana_dashboard: "1"
 spec:
+  # The key name here will be the filename inside Grafana
   nodejs-app-dashboard.json: |-
-{{ .Files.Get "dashboards/nodejs-app-dashboard.json" | indent 4 }}
+{{- $files := .Files }}
+{{- if $files.Exists "dashboards/nodejs-app-dashboard.json" }}
+{{ $files.Get "dashboards/nodejs-app-dashboard.json" | indent 4 }}
+{{- else }}
+    error: "Dashboard file not found at dashboards/nodejs-app-dashboard.json"
+{{- end }}
