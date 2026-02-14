@@ -2,7 +2,7 @@ replicaCount: 2
 
 image:
   repository: 704505749045.dkr.ecr.us-east-1.amazonaws.com/liorm-nodejs-app
-  tag: "1.0.0-build-5"
+  tag: "2.11.4-build-6"
   pullPolicy: IfNotPresent
 
 labels:
