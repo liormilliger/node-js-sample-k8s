@@ -13,7 +13,7 @@
 #     targetRevision: 1.14.0
 #     helm:
 #       values: |
-#         clusterName: liorm-website
+#         clusterName: nodejs-app
 #         serviceAccount:
 #           create: true
 #           name: aws-load-balancer-controller
