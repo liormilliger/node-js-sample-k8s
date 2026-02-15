@@ -1,2 +1,4 @@
 remove-bloat.sh
 *.txt
+*.crt
+*.key

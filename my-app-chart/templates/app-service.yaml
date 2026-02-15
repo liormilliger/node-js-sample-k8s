@@ -4,8 +4,8 @@ metadata:
   name: {{ include "nodejs-app.fullname" . }}
   labels:
     app: {{ .Values.labels.service }}
-  annotations:
-    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+  # annotations:
+  #   service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
 spec:
   type: {{ .Values.service.type }}
   ports:

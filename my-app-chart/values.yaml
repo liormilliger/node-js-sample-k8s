@@ -10,7 +10,7 @@ labels:
   service: nodejs-app
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 80
   containerPort: 8080
 
